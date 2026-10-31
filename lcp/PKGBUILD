@@ -1,0 +1,56 @@
+_majorver=21
+pkgname=lcp
+pkgdesc='The Emulight Laser/Light Control Program'
+pkgver=r138.gac5521c
+pkgrel=1
+url="https://github.com/unknown-technologies/lcp"
+license=(GPL-3.0-or-later)
+arch=(any)
+depends=("java-runtime>=${_majorver}" hicolor-icon-theme)
+makedepends=("java-environment>=${_majorver}")
+source=("git+https://github.com/graalvm/mx#commit=d60d7b795b818df4f4538033ea210d7186de1ba1"
+	"git+https://github.com/unknown-technologies/lcp"
+	"git+https://github.com/unknown-technologies/common"
+	"lcp.sh"
+	"lcp.desktop")
+sha256sums=('SKIP'
+	    'SKIP'
+	    'SKIP'
+	    '042c083ef2d5029f9599f7bed6518995e18e3380f946d1dcee149c6386994718'
+	    'c09ff629f4ab32521901531003f85deb98548773e97185f67e4f064ec740ea15')
+
+pkgver() {
+	cd "${srcdir}/lcp"
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	_MX="${srcdir}/mx/mx"
+	_JDK="/usr/lib/jvm/java-${_majorver}-openjdk"
+
+	cd "${srcdir}/lcp"
+
+	"${_MX}" --java-home="${_JDK}" \
+		build
+}
+
+package() {
+	install -dm755 "${pkgdir}/usr/share/java/lcp"
+	install -m644 "${srcdir}/lcp/build/lcp.jar" "${pkgdir}/usr/share/java/lcp/lcp.jar"
+	install -m644 "${srcdir}/common/build/libplatform.so" "${pkgdir}/usr/share/java/lcp/libplatform.so"
+
+	install -dm755 "${pkgdir}/usr/bin"
+	install -m755 "${srcdir}/lcp.sh" "${pkgdir}/usr/bin/lcp"
+
+	install -dm755 "${pkgdir}/usr/share/icons/hicolor/16x16/apps"
+	install -dm755 "${pkgdir}/usr/share/icons/hicolor/32x32/apps"
+	install -dm755 "${pkgdir}/usr/share/icons/hicolor/48x48/apps"
+	install -dm755 "${pkgdir}/usr/share/icons/hicolor/64x64/apps"
+	install -m644 "${srcdir}/lcp/projects/com.unknown.emulight.lcp/src/com/unknown/emulight/lcp/ui/resources/icons/emulight-16.png" "${pkgdir}/usr/share/icons/hicolor/16x16/apps/lcp.png"
+	install -m644 "${srcdir}/lcp/projects/com.unknown.emulight.lcp/src/com/unknown/emulight/lcp/ui/resources/icons/emulight-32.png" "${pkgdir}/usr/share/icons/hicolor/32x32/apps/lcp.png"
+	install -m644 "${srcdir}/lcp/projects/com.unknown.emulight.lcp/src/com/unknown/emulight/lcp/ui/resources/icons/emulight-48.png" "${pkgdir}/usr/share/icons/hicolor/48x48/apps/lcp.png"
+	install -m644 "${srcdir}/lcp/projects/com.unknown.emulight.lcp/src/com/unknown/emulight/lcp/ui/resources/icons/emulight-64.png" "${pkgdir}/usr/share/icons/hicolor/64x64/apps/lcp.png"
+
+	install -dm755 "${pkgdir}/usr/share/applications"
+	install -m644 "${srcdir}/lcp.desktop" "${pkgdir}/usr/share/applications"
+}

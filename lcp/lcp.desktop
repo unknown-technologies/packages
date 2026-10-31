@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Emulight LCP
+Comment=Emulight Laser/Light Control Program
+Exec=lcp
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Icon=lcp
+Categories=AudioVideo;Audio;AudioVideoEditing;
+Keywords=laser;light;midi;audio;show;dmx;ilda
+StartupWMClass=LCP
