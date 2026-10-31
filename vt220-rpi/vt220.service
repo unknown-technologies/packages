@@ -1,0 +1,28 @@
+# This unit is based on getty@.service
+
+[Unit]
+Description=DEC VT220 Terminal Emulator
+After=systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
+Before=getty.target
+IgnoreOnIsolate=yes
+Conflicts=rescue.service
+Before=rescue.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/vt220
+Restart=always
+RestartSec=0
+User=vt220
+Group=vt220
+
+ImportCredential=tty.virtual.%I.agetty.*:agetty.
+ImportCredential=tty.virtual.%I.login.*:login.
+ImportCredential=agetty.*
+ImportCredential=login.*
+ImportCredential=shell.*
+
+UnsetEnvironment=LANG LANGUAGE LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
+
+[Install]
+WantedBy=getty.target

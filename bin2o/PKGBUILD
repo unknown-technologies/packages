@@ -1,0 +1,27 @@
+pkgname='bin2o'
+pkgdesc='Converts binary data to object files in ELF format'
+pkgver=r6.g6d09978
+pkgrel=1
+url="https://github.com/hackyourlife/bin2o"
+license=(GPL-3.0-or-later)
+arch=(x86_64 aarch64)
+depends=(glibc)
+source=('git+https://github.com/hackyourlife/bin2o')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "${srcdir}/bin2o"
+
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "${srcdir}/bin2o"
+
+	make
+}
+
+package() {
+	install -dm755 "${pkgdir}/usr/bin"
+	install -m755 "${srcdir}/bin2o/bin2o" "${pkgdir}/usr/bin"
+}

@@ -1,0 +1,27 @@
+pkgname='lsi-11'
+pkgdesc='DEC PDP-11/03-L emulator'
+pkgver=r30.gdafee8f
+pkgrel=1
+url="https://github.com/hackyourlife/lsi-11"
+license=(GPL-3.0-or-later)
+arch=(x86_64 aarch64)
+depends=(glibc)
+source=('git+https://github.com/hackyourlife/lsi-11')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "${srcdir}/lsi-11"
+
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "${srcdir}/lsi-11"
+
+	make NDEBUG=1
+}
+
+package() {
+	install -dm755 "${pkgdir}/usr/bin"
+	install -m755 "${srcdir}/lsi-11/lsi-11" "${pkgdir}/usr/bin"
+}

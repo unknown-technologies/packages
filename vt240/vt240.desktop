@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=VT240
+#GenericName=Terminal
+Comment=DEC VT240 Terminal Emulation
+Exec=vt240
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Icon=vt240
+Categories=System;TerminalEmulator;
+Keywords=shell;prompt;command;commandline;cmd;
+StartupWMClass=VT240

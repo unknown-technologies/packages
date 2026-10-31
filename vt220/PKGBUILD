@@ -1,0 +1,60 @@
+pkgname='vt220'
+pkgdesc='DEC VT220 terminal emulator'
+pkgver=r161.g5779c6c
+pkgrel=1
+url="https://github.com/unknown-technologies/vt220"
+depends=(glibc libgl glfw hicolor-icon-theme)
+makedepends=(git glslang bin2o)
+license=(GPL-3.0-or-later)
+arch=(x86_64 aarch64)
+source=('git+https://github.com/unknown-technologies/vt220'
+        'vt220.desktop'
+        'vt220-24.png'
+        'vt220-96.png'
+        'vt220-green.desktop'
+        'vt220-24-green.png'
+        'vt220-96-green.png')
+sha256sums=('SKIP'
+            'f1e0405fe4ad6471dee77f79711526c21d97a05ecb05bd282367b7a5d029e342'
+            '990f77d823591d4b7136160e71600dcf3dabab7334fef41ead0b160abba55440'
+            '22ff878a547651bd37585000de6d6537e4a6fada557ee664b3f36d12b764dfe0'
+            '5e6796e633f5537711c4ee988b3727382369ce1389af901b2e8ad39cde3ed9ea'
+            '3657b9652fe52b6cbfcfd2ce744a99514dc12582d21cc5297c255f24405befcc'
+            '671511f533361d3444639caa83098668a94da00bfd8c27466a05ff0e11d2a969')
+
+pkgver() {
+	cd "${srcdir}/vt220"
+
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "${srcdir}/vt220"
+
+	make NDEBUG=1
+
+	gzip -ck9 "man/vt220.1" > "build/vt220.1.gz"
+	gzip -ck9 "man/vt220rm.7" > "build/vt220rm.7.gz"
+	gzip -ck9 "man/vt220pg.7" > "build/vt220pg.7.gz"
+	gzip -ck9 "man/vt220ug.7" > "build/vt220ug.7.gz"
+}
+
+package() {
+	install -dm755 "${pkgdir}/usr/bin"
+	install -dm755 "${pkgdir}/usr/share/applications"
+	install -dm755 "${pkgdir}/usr/share/icons/hicolor/24x24/apps"
+	install -dm755 "${pkgdir}/usr/share/icons/hicolor/96x96/apps"
+	install -dm755 "${pkgdir}/usr/share/man/man1"
+	install -dm755 "${pkgdir}/usr/share/man/man7"
+	install -m755 "${srcdir}/vt220/vt220" "${pkgdir}/usr/bin"
+	install -m644 "${srcdir}/vt220.desktop" "${pkgdir}/usr/share/applications"
+	install -m644 "${srcdir}/vt220-green.desktop" "${pkgdir}/usr/share/applications"
+	install -m644 "${srcdir}/vt220-24.png" "${pkgdir}/usr/share/icons/hicolor/24x24/apps/vt220.png"
+	install -m644 "${srcdir}/vt220-96.png" "${pkgdir}/usr/share/icons/hicolor/96x96/apps/vt220.png"
+	install -m644 "${srcdir}/vt220-24-green.png" "${pkgdir}/usr/share/icons/hicolor/24x24/apps/vt220-green.png"
+	install -m644 "${srcdir}/vt220-96-green.png" "${pkgdir}/usr/share/icons/hicolor/96x96/apps/vt220-green.png"
+	install -m644 "${srcdir}/vt220/build/vt220.1.gz" "${pkgdir}/usr/share/man/man1/vt220.1.gz"
+	install -m644 "${srcdir}/vt220/build/vt220rm.7.gz" "${pkgdir}/usr/share/man/man7/vt220rm.7.gz"
+	install -m644 "${srcdir}/vt220/build/vt220pg.7.gz" "${pkgdir}/usr/share/man/man7/vt220pg.7.gz"
+	install -m644 "${srcdir}/vt220/build/vt220ug.7.gz" "${pkgdir}/usr/share/man/man7/vt220ug.7.gz"
+}

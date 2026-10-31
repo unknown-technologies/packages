@@ -1,0 +1,39 @@
+_majorver=17
+pkgname=trcview
+pkgdesc='Architecture agnostic dynamic trace analysis tool'
+pkgver=r1302.ged87a5c1
+pkgrel=1
+url="https://github.com/pekd/tracer"
+license=(GPL UPL)
+arch=(any)
+depends=("java-runtime>=${_majorver}")
+makedepends=("java-environment>=${_majorver}")
+source=("git+https://github.com/graalvm/mx#commit=d60d7b795b818df4f4538033ea210d7186de1ba1"
+	"git+https://github.com/pekd/tracer"
+	"trcview.sh")
+sha256sums=('SKIP'
+	    'SKIP'
+	    'b12e91931031cb64621cf7cea3a7e091eb9dc8c83f98bc131ed3247a8d08ef58')
+
+pkgver() {
+	cd "${srcdir}/tracer"
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	_MX="${srcdir}/mx/mx"
+	_JDK="/usr/lib/jvm/java-${_majorver}-openjdk"
+
+	cd "${srcdir}/tracer/trcview"
+
+	"${_MX}" --java-home="${_JDK}" \
+		build
+}
+
+package() {
+	install -dm755 "${pkgdir}/usr/share/java/trcview"
+	install -m644 "${srcdir}/tracer/trcview/build/trcview.jar" "${pkgdir}/usr/share/java/trcview/trcview.jar"
+
+	install -dm755 "${pkgdir}/usr/bin"
+	install -m755 "${srcdir}/trcview.sh" "${pkgdir}/usr/bin/trcview"
+}

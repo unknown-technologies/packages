@@ -1,0 +1,27 @@
+pkgname='lsi-as'
+pkgdesc='Lightweight assembler for the DEC PDP-11/03 (aka LSI-11)'
+pkgver=r26.gcbf51e2
+pkgrel=1
+url="https://github.com/unknown-technologies/lsi-as"
+license=(GPL-3.0-or-later)
+arch=(x86_64 aarch64)
+depends=(glibc)
+source=('git+https://github.com/unknown-technologies/lsi-as')
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "${srcdir}/lsi-as"
+
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "${srcdir}/lsi-as"
+
+	make NDEBUG=1
+}
+
+package() {
+	install -dm755 "${pkgdir}/usr/bin"
+	install -m755 "${srcdir}/lsi-as/lsi-as" "${pkgdir}/usr/bin"
+}

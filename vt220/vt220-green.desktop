@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=VT220
+#GenericName=Terminal
+Comment=DEC VT220 Terminal Emulation (Green Phosphor)
+Exec=vt220 -cg
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Icon=vt220-green
+Categories=System;TerminalEmulator;
+Keywords=shell;prompt;command;commandline;cmd;vt;vt220
+StartupWMClass=VT220

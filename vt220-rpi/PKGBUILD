@@ -1,0 +1,39 @@
+pkgname='vt220-rpi'
+pkgdesc='DEC VT220 terminal emulator for the Raspberry Pi'
+pkgver=r156.g39223e8
+pkgrel=1
+url="https://github.com/unknown-technologies/vt220"
+license=(GPL-3.0-or-later)
+arch=(aarch64)
+depends=(glibc libdrm mesa libglvnd libssh)
+makedepends=(bin2o glslang)
+source=('git+https://github.com/unknown-technologies/vt220'
+        'vt220.service'
+        'vt220-sysusers.conf'
+        'vt220-tmpfiles.conf')
+sha256sums=('SKIP'
+            '7118ab5cab57b0020e97cb0940dd74923bb5db694b61d60506e7fd9567d7e675'
+            'afc50189b49eff50bf5ccd456a5db9c7905240be5d0b73c11752da20414c19f7'
+            'e4fd9fefe933b203a96a7a21f657ad0b8c0d0b7f7a5abec4c64e32ef3d53f034')
+
+pkgver() {
+	cd "${srcdir}/vt220"
+
+	echo "r$(git rev-list --count HEAD).g$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd "${srcdir}/vt220"
+
+	make -f Makefile.rpi NDEBUG=1
+}
+
+package() {
+	# man-pages are NOT installed as part of this package
+
+	install -Dm755 "${srcdir}/vt220/vt220" "${pkgdir}/usr/bin/vt220"
+	install -Dm4755 "${srcdir}/vt220/suid-helper" "${pkgdir}/usr/bin/vt220-agetty"
+	install -Dm644 "${srcdir}/vt220-sysusers.conf" "${pkgdir}/usr/lib/sysusers.d/${pkgbase}.conf"
+	install -Dm644 "${srcdir}/vt220-tmpfiles.conf" "${pkgdir}/usr/lib/tmpfiles.d/${pkgbase}.conf"
+	install -Dm644 "${srcdir}/vt220.service" "${pkgdir}/usr/lib/systemd/system/vt220.service"
+}
